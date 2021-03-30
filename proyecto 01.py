@@ -40,7 +40,7 @@ def clue():
 
     
     fuerza_bruta(sospechosos, armas, motivos, partes_cuerpo, lugares, combinacion_ganadora)
-    backtracking(sospechosos, armas, motivos, partes_cuerpo, lugares, combinacion_ganadora, 5)
+    backtracking(sospechosos, armas, motivos, partes_cuerpo, lugares, combinacion_ganadora, 500)
     
 
 
@@ -71,7 +71,7 @@ def fuerza_bruta(lista_sospechosos, lista_armas, lista_motivos, lista_partes_cue
     print("Algoritmo de Fuerza Bruta")
     print()
     
-
+    cantidad = 0
     while True:
 
         print("===========================================")
@@ -83,7 +83,7 @@ def fuerza_bruta(lista_sospechosos, lista_armas, lista_motivos, lista_partes_cue
         intento_lugares = lugares[random.randint(0,largo_lugares)]
 
         intento = [intento_sospechosos, intento_armas, intento_motivos, intento_partes_cuerpo, intento_lugares]
-
+        cantidad += 1
 
 
         print()
@@ -111,12 +111,14 @@ def fuerza_bruta(lista_sospechosos, lista_armas, lista_motivos, lista_partes_cue
             if((len(sospechosos_descartados) == 6) and (len(armas_descartadas) == 7) and (len(motivos_descartados) == 5) and (len(partes_cuerpo_descartadas) == 5) and (len(lugares_descartados) == 8)):
                 print()
                 print("He resuelto el problema (descarte). La combinación ganadora es: ", combinacion_ganadora)
+                print("La cantidad de intentos ha sido: ", cantidad)
                 #time.sleep(200)
                 return print()
 
             if(intento == combinacion_ganadora):
                 print()
                 print("He resuelto el problema. La combinación ganadora es: ", combinacion_ganadora)
+                print("La cantidad de intentos ha sido: ", cantidad)
                 #time.sleep(200)
                 return print()
 
@@ -257,6 +259,9 @@ def backtracking(lista_sospechosos, lista_armas, lista_motivos, lista_partes_cue
     lugares_descartados = []
 
     cant_restricciones = cantidad_restricciones
+    intentos_inteligentes = []
+
+    cantidad = 0
 
     print("===========================================")
     print()
@@ -346,6 +351,7 @@ def backtracking(lista_sospechosos, lista_armas, lista_motivos, lista_partes_cue
 
     restricciones = []
 
+    cantidad_act = 0
     while i < cant_restricciones:
 
         while True:
@@ -407,11 +413,30 @@ def backtracking(lista_sospechosos, lista_armas, lista_motivos, lista_partes_cue
                 break
             else: 
                 print("No debería entrar a aquí")
+        
+
+        if(categoria_1 == categoria_2):
+            continue
 
         if(carta_1 == carta_2):
             continue
+        
+        restriccion_act = [carta_1, carta_2]
+        flag = True
+        for x in range(0,len(restricciones)):
+            if(restriccion_act == restricciones[x]):
+                flag = False
+                cantidad_act += 1
+                break
 
-        restricciones = restricciones + [[carta_1, carta_2]]
+        if(cantidad_act == 1000000):
+            print("Ya no se pueden hacer más restricciones: ")
+            break
+
+        if(flag == False):
+            continue
+
+        restricciones = restricciones + [restriccion_act]
 
         i += 1
 
@@ -431,14 +456,47 @@ def backtracking(lista_sospechosos, lista_armas, lista_motivos, lista_partes_cue
 
             intento = [intento_sospechosos, intento_armas, intento_motivos, intento_partes_cuerpo, intento_lugares]
 
-            
+            i = 0
+            flag = True
+            while i < len(restricciones):
 
+                restriccion_actual = restricciones[i]
 
+                carta_1 = restricciones[i][0]
+                carta_2 = restricciones[i][1]
 
+                m = 0
 
+                while m < 4:
 
+                    if(carta_1 == intento[m]):
+                        
+                        n = 0
+                        while n < 4:
+
+                            if(carta_2 == intento[n]):
+                                flag = False
+                                break
+                            
+                            n += 1
+                        break
+                        
+                    
+                    m += 1
+                
+                if(flag == False):
+                    break
+
+                i += 1
+
+            if(flag == False):
+                continue
+
+            cantidad += 1
+        
             print()
             print("Intento: ", intento)
+            intentos_inteligentes = intentos_inteligentes + [intento]
             print("Combinación ganadora: ", combinacion_ganadora)
             print()
 
@@ -462,12 +520,32 @@ def backtracking(lista_sospechosos, lista_armas, lista_motivos, lista_partes_cue
                 if((len(sospechosos_descartados) == 6) and (len(armas_descartadas) == 7) and (len(motivos_descartados) == 5) and (len(partes_cuerpo_descartadas) == 5) and (len(lugares_descartados) == 8)):
                     print()
                     print("He resuelto el problema (descarte). La combinación ganadora es: ", combinacion_ganadora)
+                    print("Intentos hechos: ")
+                    for x in range(0,len(intentos_inteligentes)):
+
+                        print(intentos_inteligentes[x])
+
+
+                    print("Restricciones: ", restricciones)
+                    print()
+                    print("La cantidad de intentos ha sido: ", cantidad)
                     #time.sleep(200)
                     return print()
 
                 if(intento == combinacion_ganadora):
                     print()
-                    print("He resuelto el problema. La combinación ganadora es: ", combinacion_ganadora)
+                    print("He resuelto el problema. La combinación ganadora es: ", combinacion_ganadora) 
+                    print("Intentos hechos: ")
+                    for x in range(0,len(intentos_inteligentes)):
+
+                        print(intentos_inteligentes[x])
+
+
+                    print("Restricciones: ", restricciones)
+                    print()
+                    print("La cantidad de intentos ha sido: ", cantidad)
+                    print("cantidad_act: ", cantidad_act)
+                    print(len(restricciones))
                     #time.sleep(200)
                     return print()
 
