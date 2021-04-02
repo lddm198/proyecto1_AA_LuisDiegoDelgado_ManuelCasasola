@@ -3,7 +3,7 @@ from tkinter import messagebox
 import random
 import time
 
-global sospechosos, armas, motivos, partes_cuerpo, lugares, combinacion_ganadora, intentos_fuerza, intentos_back, descartados_fuer, descartados_back, cant_restricc
+global sospechosos, armas, motivos, partes_cuerpo, lugares, combinacion_ganadora, intentos_fuerza, intentos_back, descartados_fuer, descartados_back, cant_restricc, cant_fuer, cant_back
  
 #Se crean las listas con todas las cartas
 sospechosos = ["Mejor Amigo", "Novia", "Vecina", "Mensajero", "Extraño", "Hermanastro", "Colega"]
@@ -54,7 +54,8 @@ def fuerza_bruta(lista_sospechosos, lista_armas, lista_motivos, lista_partes_cue
     print("Algoritmo de Fuerza Bruta")
     print()
     
-
+    cantidad = 0
+    cant_fuer = 0
     while True:
 
         print("===========================================")
@@ -66,11 +67,13 @@ def fuerza_bruta(lista_sospechosos, lista_armas, lista_motivos, lista_partes_cue
         intento_lugares = lugares[random.randint(0,largo_lugares)]
 
         intento = [intento_sospechosos, intento_armas, intento_motivos, intento_partes_cuerpo, intento_lugares]
+        cantidad += 1
+        cant_fuer += 1
 
-        intentos_fuerza.append(intento)
 
         print()
         print("Intento: ", intento)
+        intentos_fuerza.append(intento)
         print("Combinación ganadora: ", combinacion_ganadora)
         print()
 
@@ -94,12 +97,14 @@ def fuerza_bruta(lista_sospechosos, lista_armas, lista_motivos, lista_partes_cue
             if((len(sospechosos_descartados) == 6) and (len(armas_descartadas) == 7) and (len(motivos_descartados) == 5) and (len(partes_cuerpo_descartadas) == 5) and (len(lugares_descartados) == 8)):
                 print()
                 print("He resuelto el problema (descarte). La combinación ganadora es: ", combinacion_ganadora)
+                print("La cantidad de intentos ha sido: ", cantidad)
                 #time.sleep(200)
                 return print()
 
             if(intento == combinacion_ganadora):
                 print()
                 print("He resuelto el problema. La combinación ganadora es: ", combinacion_ganadora)
+                print("La cantidad de intentos ha sido: ", cantidad)
                 #time.sleep(200)
                 return print()
 
@@ -238,16 +243,13 @@ def backtracking(lista_sospechosos, lista_armas, lista_motivos, lista_partes_cue
     largo_partes_cuerpo = len(partes_cuerpo)-1
     largo_lugares = len(lugares)-1
 
-    sospechosos_descartados = []
-    armas_descartadas = []
-    motivos_descartados = []
-    partes_cuerpo_descartadas = []
-    lugares_descartados = []
+    descartes = []
 
     cant_restricciones = cantidad_restricciones
     intentos_inteligentes = []
 
     cantidad = 0
+    cantidad_intentos = 0
 
     print("===========================================")
     print()
@@ -429,253 +431,267 @@ def backtracking(lista_sospechosos, lista_armas, lista_motivos, lista_partes_cue
     print()
     print("Restricciones: ", restricciones)
     print()
+    backtracking_aux(lista_sospechosos, lista_armas, lista_motivos, lista_partes_cuerpo, lista_lugares, lista_combinacion_ganadora, restricciones, intentos_inteligentes, descartes, cantidad_intentos)
+
+def backtracking_aux(lista_sospechosos, lista_armas, lista_motivos, lista_partes_cuerpo, lista_lugares, lista_combinacion_ganadoras, restricciones, intentos_inteligentes, lista_descartes, cantidad_intentos):
+
+    print("===========================================")
+
+    combinacion_ganadora = lista_combinacion_ganadoras
+    descartes = lista_descartes
+    sospechosos = lista_sospechosos
+    armas = lista_armas
+    motivos = lista_motivos
+    partes_cuerpo = lista_partes_cuerpo
+    lugares = lista_lugares
+    cant_back = cantidad_intentos
+
+    largo_sospechosos = len(lista_sospechosos)-1
+    largo_armas = len(lista_armas)-1
+    largo_motivos = len(lista_motivos)-1
+    largo_partes_cuerpo = len(lista_partes_cuerpo)-1
+    largo_lugares = len(lista_lugares)-1
+
 
     while True:
 
-            print("===========================================")
+        intento_sospechosos = sospechosos[random.randint(0,largo_sospechosos)]
+        intento_armas = armas[random.randint(0,largo_armas)]
+        intento_motivos = motivos[random.randint(0,largo_motivos)]
+        intento_partes_cuerpo = partes_cuerpo[random.randint(0,largo_partes_cuerpo)]
+        intento_lugares = lugares[random.randint(0,largo_lugares)]
 
-            intento_sospechosos = sospechosos[random.randint(0,largo_sospechosos)]
-            intento_armas = armas[random.randint(0,largo_armas)]
-            intento_motivos = motivos[random.randint(0,largo_motivos)]
-            intento_partes_cuerpo = partes_cuerpo[random.randint(0,largo_partes_cuerpo)]
-            intento_lugares = lugares[random.randint(0,largo_lugares)]
+        cantidad = cantidad_intentos
 
-            intento = [intento_sospechosos, intento_armas, intento_motivos, intento_partes_cuerpo, intento_lugares]
+        intento = [intento_sospechosos, intento_armas, intento_motivos, intento_partes_cuerpo, intento_lugares]
 
-            i = 0
-            flag = True
-            while i < len(restricciones):
+        i = 0
+        flag = True
+        while i < len(restricciones):
 
-                restriccion_actual = restricciones[i]
+            restriccion_actual = restricciones[i]
 
-                carta_1 = restricciones[i][0]
-                carta_2 = restricciones[i][1]
+            carta_1 = restricciones[i][0]
+            carta_2 = restricciones[i][1]
 
-                m = 0
+            m = 0
 
-                while m < 4:
+            while m < 4:
 
-                    if(carta_1 == intento[m]):
-                        
-                        n = 0
-                        while n < 4:
-
-                            if(carta_2 == intento[n]):
-                                flag = False
-                                break
-                            
-                            n += 1
-                        break
-                        
+                if(carta_1 == intento[m]):
                     
-                    m += 1
-                
-                if(flag == False):
+                    n = 0
+                    while n < 4:
+
+                        if(carta_2 == intento[n]):
+                            flag = False
+                            break
+                        
+                        n += 1
                     break
-
-                i += 1
-
+                    
+                
+                m += 1
+            
             if(flag == False):
+                break
+
+            i += 1
+
+        if(flag == False):
+            continue
+        
+        if(flag == True):
+            break
+
+    cantidad += 1
+
+    print()
+    print("Intento: ", intento)
+    intentos_inteligentes = intentos_inteligentes + [intento]
+    intentos_back.append(intento)
+    print("Combinación ganadora: ", combinacion_ganadora)
+    print()
+
+    """
+    print("Sospechosos descartados: ", sospechosos_descartados)
+    print("Armas descartadas: ", armas_descartadas)
+    print("Motivos descartados: ", motivos_descartados)
+    print("Partes de cuerpo descartadas: ", partes_cuerpo_descartadas)
+    print("Lugares descartados: ", lugares_descartados)
+    """
+    print()
+
+    
+
+    dado = random.randint(1,5)
+    #dado = 1
+
+    
+
+    #print("Dado: ", dado)
+    """
+    if((len(sospechosos_descartados) == 6) and (len(armas_descartadas) == 7) and (len(motivos_descartados) == 5) and (len(partes_cuerpo_descartadas) == 5) and (len(lugares_descartados) == 8)):
+        print()
+        print("He resuelto el problema (descarte). La combinación ganadora es: ", combinacion_ganadora)
+        print("Intentos hechos: ")
+        for x in range(0,len(intentos_inteligentes)):
+
+            print(intentos_inteligentes[x])
+
+
+        print("Restricciones: ", restricciones)
+        print()
+        print("La cantidad de intentos ha sido: ", cantidad)
+        #time.sleep(200)
+        return print()
+    """
+
+    if(intento == combinacion_ganadora):
+        print()
+        print("He resuelto el problema. La combinación ganadora es: ", combinacion_ganadora) 
+        print("Intentos hechos: ")
+        for x in range(0,len(intentos_inteligentes)):
+
+            print(intentos_inteligentes[x])
+
+
+        print("Restricciones: ", restricciones)
+        print()
+        print("La cantidad de intentos ha sido: ", cantidad)
+        print("La cantidad de restricciones ha sido: ", len(restricciones))
+        print()
+        print("Cartas descartadas: ", descartes)
+        #time.sleep(200)
+        return print()
+
+    while True:
+
+        if(dado == 1):
+
+            if(intento_sospechosos != combinacion_ganadora[0]):
+
+
+                i = 0
+                while i <= largo_sospechosos:
+
+                    if(intento_sospechosos == sospechosos[i]):
+                        sospechosos = sospechosos[:i] + sospechosos[i+1:]
+                        largo_sospechosos = len(sospechosos)-1
+                        descartes = descartes + [intento_sospechosos]
+                        descartados_back.append(intento_sospechosos)
+                        print("Carta descartada: ", intento_sospechosos)
+                        backtracking_aux(sospechosos, armas, motivos, partes_cuerpo, lugares, combinacion_ganadora, restricciones, intentos_inteligentes, descartes, cantidad)
+                        break
+                    else:
+                        i += 1
+                        continue
+                break
+                
+
+            elif(intento_sospechosos == combinacion_ganadora[0]):
+                dado = random.randint(1,5)
                 continue
 
-            cantidad += 1
-        
-            print()
-            print("Intento: ", intento)
-            intentos_inteligentes = intentos_inteligentes + [intento]
-            print("Combinación ganadora: ", combinacion_ganadora)
-            print()
 
-            print("Sospechosos descartados: ", sospechosos_descartados)
-            print("Armas descartadas: ", armas_descartadas)
-            print("Motivos descartados: ", motivos_descartados)
-            print("Partes de cuerpo descartadas: ", partes_cuerpo_descartadas)
-            print("Lugares descartados: ", lugares_descartados)
+        if(dado == 2):
 
-            print()
+            if(intento_armas != combinacion_ganadora[1]):
 
-            
+                i = 0
+                while i <= largo_armas:
 
-            dado = random.randint(1,5)
-            #dado = 1
-
-            while True:
-
-                #print("Dado: ", dado)
-
-                if((len(sospechosos_descartados) == 6) and (len(armas_descartadas) == 7) and (len(motivos_descartados) == 5) and (len(partes_cuerpo_descartadas) == 5) and (len(lugares_descartados) == 8)):
-                    print()
-                    print("He resuelto el problema (descarte). La combinación ganadora es: ", combinacion_ganadora)
-                    print("Intentos hechos: ")
-                    for x in range(0,len(intentos_inteligentes)):
-
-                        print(intentos_inteligentes[x])
-
-
-                    print("Restricciones: ", restricciones)
-                    print()
-                    print("La cantidad de intentos ha sido: ", cantidad)
-                    #time.sleep(200)
-                    return print()
-
-                if(intento == combinacion_ganadora):
-                    print()
-                    print("He resuelto el problema. La combinación ganadora es: ", combinacion_ganadora) 
-                    print("Intentos hechos: ")
-                    for x in range(0,len(intentos_inteligentes)):
-
-                        print(intentos_inteligentes[x])
-
-
-                    print("Restricciones: ", restricciones)
-                    print()
-                    print("La cantidad de intentos ha sido: ", cantidad)
-                    print("cantidad_act: ", cantidad_act)
-                    print(len(restricciones))
-                    #time.sleep(200)
-                    return print()
-
-                if(dado == 1):
-
-                    if(intento_sospechosos != combinacion_ganadora[0]):
-
-
-                        i = 0
-                        while i <= largo_sospechosos:
-
-                            if(intento_sospechosos == sospechosos[i]):
-                                sospechosos = sospechosos[:i] + sospechosos[i+1:]
-                                largo_sospechosos = len(sospechosos)-1
-                                sospechosos_descartados = sospechosos_descartados + [intento_sospechosos]
-                                print("Carta descartada: ", intento_sospechosos)
-                                break
-                            else:
-                                i += 1
-                                continue
+                    if(intento_armas == armas[i]):
+                        armas = armas[:i]+ armas[i+1:]
+                        largo_armas = len(armas)-1
+                        descartes = descartes + [intento_armas]
+                        descartados_back.append(intento_armas)
+                        print("Carta descartada: ", intento_armas)
+                        backtracking_aux(sospechosos, armas, motivos, partes_cuerpo, lugares, combinacion_ganadora, restricciones, intentos_inteligentes, descartes, cantidad)
                         break
-
-                    elif(intento_sospechosos == combinacion_ganadora[0]):
-                        dado = random.randint(1,5)
+                    else:
+                        i += 1
                         continue
-
-
-                if(dado == 2):
-
-                    if(intento_armas != combinacion_ganadora[1]):
-
-                        i = 0
-                        while i <= largo_armas:
-
-                            if(intento_armas == armas[i]):
-                                armas = armas[:i]+ armas[i+1:]
-                                largo_armas = len(armas)-1
-                                armas_descartadas = armas_descartadas + [intento_armas]
-                                print("Carta descartada: ", intento_armas)
-                                break
-                            else:
-                                i += 1
-                                continue
-                        break
-
-                    elif(intento_armas == combinacion_ganadora[1]):
-                        dado = random.randint(1,5)
-                        continue
-
-                if(dado == 3):
-
-                    if(intento_motivos != combinacion_ganadora[2]):
-
-                        i = 0
-                        while i <= largo_motivos:
-
-                            if(intento_motivos == motivos[i]):
-                                motivos = motivos[:i] + motivos[i+1:]
-                                largo_motivos = len(motivos)-1
-                                motivos_descartados = motivos_descartados + [intento_motivos]
-                                print("Carta descartada: ", intento_motivos)
-                                break
-                            else:
-                                i += 1
-                                continue
-                        break
-
-                    elif(intento_motivos == combinacion_ganadora[2]):
-                        dado = random.randint(1,5)
-                        continue
-
-                if(dado == 4):
-
-                    if(intento_partes_cuerpo != combinacion_ganadora[3]):
-
-                        i = 0
-                        while i <= largo_partes_cuerpo:
-                            
-                            if(intento_partes_cuerpo == partes_cuerpo[i]):
-                                partes_cuerpo = partes_cuerpo[:i] + partes_cuerpo[i+1:]
-                                largo_partes_cuerpo = len(partes_cuerpo)-1
-                                partes_cuerpo_descartadas = partes_cuerpo_descartadas + [intento_partes_cuerpo]
-                                print("Carta descartada: ", intento_partes_cuerpo)
-                                break
-                            else:
-                                i += 1
-                                continue
-                        break
-                    elif(intento_partes_cuerpo == combinacion_ganadora[3]):
-                        dado = random.randint(1,5)
-                        continue
-
+                break
                 
-                if(dado == 5):
 
-                    if(intento_lugares != combinacion_ganadora[4]):
+            elif(intento_armas == combinacion_ganadora[1]):
+                dado = random.randint(1,5)
+                continue
 
-                        i = 0
-                        while i <= largo_lugares:
+        if(dado == 3):
 
-                            if(intento_lugares == lugares[i]):
-                                lugares = lugares[:i] + lugares[i+1:]
-                                largo_lugares = len(lugares)-1
-                                lugares_descartados = lugares_descartados + [intento_lugares]
-                                print("Carta descartada: ", intento_lugares)
-                                break
-                            else:
-                                i += 1
-                                continue
+            if(intento_motivos != combinacion_ganadora[2]):
+
+                i = 0
+                while i <= largo_motivos:
+
+                    if(intento_motivos == motivos[i]):
+                        motivos = motivos[:i] + motivos[i+1:]
+                        largo_motivos = len(motivos)-1
+                        descartes = descartes + [intento_motivos]
+                        descartados_back.append(intento_motivos)
+                        print("Carta descartada: ", intento_motivos)
+                        backtracking_aux(sospechosos, armas, motivos, partes_cuerpo, lugares, combinacion_ganadora, restricciones, intentos_inteligentes, descartes, cantidad)
                         break
-                    elif(intento_lugares == combinacion_ganadora[4]):
-                        dado = random.randint(1,5)
+                    else:
+                        i += 1
                         continue
+                break
 
-                else:
-                    print("No debería entra aquí!!!")
+            elif(intento_motivos == combinacion_ganadora[2]):
+                dado = random.randint(1,5)
+                continue
 
-#Funcion del boton de confirmacion al agregar el numero de restricciones
+        if(dado == 4):
 
-def boton_cantidad(entry, boton, cant_restr, lis_bot1, lis_bot2):
+            if(intento_partes_cuerpo != combinacion_ganadora[3]):
 
-    entry.config(state= DISABLED)
-    boton.config(state= DISABLED)
-   
-    fuerza_bruta(sospechosos, armas, motivos, partes_cuerpo, lugares, combinacion_ganadora)
-    backtracking(sospechosos, armas, motivos, partes_cuerpo, lugares, combinacion_ganadora, cant_restr)
+                i = 0
+                while i <= largo_partes_cuerpo:
+                    
+                    if(intento_partes_cuerpo == partes_cuerpo[i]):
+                        partes_cuerpo = partes_cuerpo[:i] + partes_cuerpo[i+1:]
+                        largo_partes_cuerpo = len(partes_cuerpo)-1
+                        descartes = descartes + [intento_partes_cuerpo]
+                        descartados_back.append(intento_partes_cuerpo)
+                        print("Carta descartada: ", intento_partes_cuerpo)
+                        backtracking_aux(sospechosos, armas, motivos, partes_cuerpo, lugares, combinacion_ganadora, restricciones, intentos_inteligentes, descartes, cantidad)
+                        break
+                    else:
+                        i += 1
+                        continue
+                break
+            elif(intento_partes_cuerpo == combinacion_ganadora[3]):
+                dado = random.randint(1,5)
+                continue
 
-    intento = intentos_fuerza[0]
-    lis_bot1[0].config(text= intento[0])
-    lis_bot1[1].config(text= intento[1])
-    lis_bot1[2].config(text= intento[2])
-    lis_bot1[3].config(text= intento[3])
-    lis_bot1[4].config(text= intento[4])
+        
+        if(dado == 5):
 
-    intentos_fuerza.remove(intento)
+            if(intento_lugares != combinacion_ganadora[4]):
 
-    intento = intentos_back[0]
-    lis_bot2[0].config(text= intento[0])
-    lis_bot2[1].config(text= intento[1])
-    lis_bot2[2].config(text= intento[2])
-    lis_bot2[3].config(text= intento[3])
-    lis_bot2[4].config(text= intento[4])
+                i = 0
+                while i <= largo_lugares:
 
-    intentos_back.remove(intento)
+                    if(intento_lugares == lugares[i]):
+                        lugares = lugares[:i] + lugares[i+1:]
+                        largo_lugares = len(lugares)-1
+                        descartes = descartes + [intento_lugares]
+                        descartados_back.append(intento_lugares)
+                        print("Carta descartada: ", intento_lugares)
+                        backtracking_aux(sospechosos, armas, motivos, partes_cuerpo, lugares, combinacion_ganadora, restricciones, intentos_inteligentes, descartes, cantidad)
+                        break
+                    else:
+                        i += 1
+                        continue
+                break
+            elif(intento_lugares == combinacion_ganadora[4]):
+                dado = random.randint(1,5)
+                continue
+
+        else:
+            print("No debería entra aquí!!!")
 
 #Funcion para los botones de siguiente solucion -----------------------------------------------------
 
@@ -712,14 +728,64 @@ def ven_prin(): # ventana principal
     titu = Label(ven, text= "Crime Investigation - El Juego", bg= "sienna3", fg= "white", font=("Times", 18), padx= 40)
     titu.place(x= 315, y= 20)
 
+    #Funcion del boton de confirmacion al agregar el numero de restricciones
+
+    def boton_cantidad(entry, boton, cant_restr, lis_bot1, lis_bot2, label_int1, label_int2):
+
+        if int(entry.get()) > 762 or int(entry.get()) < 0:
+            messagebox.showerror('Error', 'Las restricciones deben ser mayores a 0 y menores a 762.', parent= ven)
+
+        else:
+            entry.config(state= DISABLED)
+            boton.config(state= DISABLED)
+        
+            fuerza_bruta(sospechosos, armas, motivos, partes_cuerpo, lugares, combinacion_ganadora)
+            backtracking(sospechosos, armas, motivos, partes_cuerpo, lugares, combinacion_ganadora, cant_restr)
+
+            cant_fuer = len(intentos_fuerza)
+            cant_back = len(intentos_back)
+
+            label_int1.config(text= cant_fuer)
+            label_int2.config(text= cant_back)
+
+            intento = intentos_fuerza[0]
+            lis_bot1[0].config(text= intento[0])
+            lis_bot1[1].config(text= intento[1])
+            lis_bot1[2].config(text= intento[2])
+            lis_bot1[3].config(text= intento[3])
+            lis_bot1[4].config(text= intento[4])
+
+            intentos_fuerza.remove(intento)
+
+            intento = intentos_back[0]
+            lis_bot2[0].config(text= intento[0])
+            lis_bot2[1].config(text= intento[1])
+            lis_bot2[2].config(text= intento[2])
+            lis_bot2[3].config(text= intento[3])
+            lis_bot2[4].config(text= intento[4])
+
+            intentos_back.remove(intento)
+
     #Casilla donde se ingresa la cantidad de resticciones---------------------------------------------------------------------------------
     lab_restr = Label(ven, text= "Cantidad de Restricciones", fg= "sienna3", font=("Times", 12))
     lab_restr.place(x= 45, y= 40)
 
-    entr_rest = Entry(ven, font=("Helvetica", 11), width= 8, justify= CENTER, textvariable= cant_restricc) 
+    cant_fuer_L = Label(ven, text= "Intentos:", fg= "sienna3", font=("Times", 11))
+    cant_fuer_L.place(x= 830, y= 345)
+
+    cant_fuer_L2 = Label(ven, text= "", fg= "sienna3", font=("Times", 11))
+    cant_fuer_L2.place(x= 890, y= 345)
+
+    cant_back_L = Label(ven, text= "Intentos:", fg= "sienna3", font=("Times", 11))
+    cant_back_L.place(x= 830, y= 555)
+
+    cant_back_L2 = Label(ven, text= ":", fg= "sienna3", font=("Times", 11))
+    cant_back_L2.place(x= 890, y= 555)
+
+    entr_rest = Entry(ven, font=("Helvetica", 11), width= 8, justify= CENTER) 
     entr_rest.place(x= 80, y= 70)
 
-    bot_ok = Button(ven, text= "Ok", bg= "sienna3", fg= "white", font= ("Helvetica", 8), command= lambda: boton_cantidad(entr_rest, bot_ok, cant_restricc, lis_bot_fuer, lis_bot_back))
+    bot_ok = Button(ven, text= "Ok", bg= "sienna3", fg= "white", font= ("Helvetica", 8), command= lambda: boton_cantidad(entr_rest, bot_ok, int(entr_rest.get()), lis_bot_fuer, lis_bot_back, cant_fuer_L2, cant_back_L2))
     bot_ok.place(x= 150, y= 68.5)
 
     #Cartas de la solucion----------------------------------------------------------------------------------------------------------------
