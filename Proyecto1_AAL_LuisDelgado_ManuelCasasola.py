@@ -253,26 +253,6 @@ def backtracking(lista_sospechosos, lista_armas, lista_motivos, lista_partes_cue
     print()
     print("Restricciones: ", restricciones)
     print()
-    backtracking_aux(lista_sospechosos, lista_armas, lista_motivos, lista_partes_cuerpo, lista_lugares, lista_combinacion_ganadora, restricciones, intentos_inteligentes, descartes, cantidad_intentos)
-
-def backtracking_aux(lista_sospechosos, lista_armas, lista_motivos, lista_partes_cuerpo, lista_lugares, lista_combinacion_ganadoras, restricciones, intentos_inteligentes, lista_descartes, cantidad_intentos):
-
-    print("===========================================")
-
-    combinacion_ganadora = lista_combinacion_ganadoras
-    descartes = lista_descartes
-    sospechosos = lista_sospechosos
-    armas = lista_armas
-    motivos = lista_motivos
-    partes_cuerpo = lista_partes_cuerpo
-    lugares = lista_lugares
-    
-    largo_sospechosos = len(lista_sospechosos)-1
-    largo_armas = len(lista_armas)-1
-    largo_motivos = len(lista_motivos)-1
-    largo_partes_cuerpo = len(lista_partes_cuerpo)-1
-    largo_lugares = len(lista_lugares)-1
-
 
     while True:
 
@@ -282,7 +262,6 @@ def backtracking_aux(lista_sospechosos, lista_armas, lista_motivos, lista_partes
         intento_partes_cuerpo = partes_cuerpo[random.randint(0,largo_partes_cuerpo)]
         intento_lugares = lugares[random.randint(0,largo_lugares)]
 
-        cantidad = cantidad_intentos
 
         intento = [intento_sospechosos, intento_armas, intento_motivos, intento_partes_cuerpo, intento_lugares]
 
@@ -324,6 +303,30 @@ def backtracking_aux(lista_sospechosos, lista_armas, lista_motivos, lista_partes
         
         if(flag == True):
             break
+    
+    backtracking_aux(lista_sospechosos, lista_armas, lista_motivos, lista_partes_cuerpo, lista_lugares, lista_combinacion_ganadora, restricciones, intentos_inteligentes, descartes, cantidad_intentos, intento)
+
+def backtracking_aux(lista_sospechosos, lista_armas, lista_motivos, lista_partes_cuerpo, lista_lugares, lista_combinacion_ganadoras, restricciones, intentos_inteligentes, lista_descartes, cantidad_intentos, intento):
+
+    print("===========================================")
+
+    combinacion_ganadora = lista_combinacion_ganadoras
+    descartes = lista_descartes
+    sospechosos = lista_sospechosos
+    armas = lista_armas
+    motivos = lista_motivos
+    partes_cuerpo = lista_partes_cuerpo
+    lugares = lista_lugares
+
+    largo_sospechosos = len(lista_sospechosos)-1
+    largo_armas = len(lista_armas)-1
+    largo_motivos = len(lista_motivos)-1
+    largo_partes_cuerpo = len(lista_partes_cuerpo)-1
+    largo_lugares = len(lista_lugares)-1
+
+    cantidad = cantidad_intentos
+
+    intento = intento
 
     cantidad += 1
 
@@ -388,126 +391,408 @@ def backtracking_aux(lista_sospechosos, lista_armas, lista_motivos, lista_partes
 
     while True:
 
+        #print("Dado 2.0: ", dado)
         if(dado == 1):
 
-            if(intento_sospechosos != combinacion_ganadora[0]):
+            if(intento[0] != combinacion_ganadora[0]):
 
 
                 i = 0
                 while i <= largo_sospechosos:
 
-                    if(intento_sospechosos == sospechosos[i]):
+                    if(intento[0] == sospechosos[i]):
                         sospechosos = sospechosos[:i] + sospechosos[i+1:]
                         largo_sospechosos = len(sospechosos)-1
-                        descartes = descartes + [intento_sospechosos]
-                        descartados_back.append(intento_sospechosos)
-                        print("Carta descartada: ", intento_sospechosos)
-                        backtracking_aux(sospechosos, armas, motivos, partes_cuerpo, lugares, combinacion_ganadora, restricciones, intentos_inteligentes, descartes, cantidad)
-                        break
+                        descartes = descartes + [intento[0]]
+                        descartados_back.append(intento[0])
+                        print("Carta descartada: ", intento[0])
+
+                        contador_max = 0
+                        while True:
+                            contador_max += 1
+                            cambio = sospechosos[random.randint(0,largo_sospechosos)]
+                            intento = [cambio, intento[1], intento[2], intento[3], intento[4]]
+                            i = 0
+                            flag = True
+                            while i < len(restricciones):
+
+                                restriccion_actual = restricciones[i]
+
+                                carta_1 = restricciones[i][0]
+                                carta_2 = restricciones[i][1]
+
+                                m = 0
+
+                                while m < 4:
+
+                                    if(carta_1 == intento[m]):
+                                        
+                                        n = 0
+                                        while n < 4:
+
+                                            if(carta_2 == intento[n]):
+                                                flag = False
+                                                break
+                                            
+                                            n += 1
+                                        break
+                                        
+                                    
+                                    m += 1
+                                
+                                if(flag == False):
+                                    break
+
+                                i += 1
+
+                            if(flag == False):
+                                if(contador_max == 10000):
+                                    dado(dado = random.randint(1,5))
+                                    break
+                                continue
+                            
+                            if(flag == True):
+                                backtracking_aux(sospechosos, armas, motivos, partes_cuerpo, lugares, combinacion_ganadora, restricciones, intentos_inteligentes, descartes, cantidad, intento)
+                                x = False
+                                break
+
+                        if(x == False):
+                            break
+                        
                     else:
                         i += 1
                         continue
-                break
+
+                if(x == False):
+                     break   
+
+                continue
                 
 
-            elif(intento_sospechosos == combinacion_ganadora[0]):
+            elif(intento[0] == combinacion_ganadora[0]):
                 dado = random.randint(1,5)
                 continue
 
 
         if(dado == 2):
 
-            if(intento_armas != combinacion_ganadora[1]):
+            if(intento[1] != combinacion_ganadora[1]):
+
 
                 i = 0
                 while i <= largo_armas:
 
-                    if(intento_armas == armas[i]):
-                        armas = armas[:i]+ armas[i+1:]
+                    if(intento[1] == armas[i]):
+                        armas = armas[:i] + armas[i+1:]
                         largo_armas = len(armas)-1
-                        descartes = descartes + [intento_armas]
-                        descartados_back.append(intento_armas)
-                        print("Carta descartada: ", intento_armas)
-                        backtracking_aux(sospechosos, armas, motivos, partes_cuerpo, lugares, combinacion_ganadora, restricciones, intentos_inteligentes, descartes, cantidad)
-                        break
+                        descartes = descartes + [intento[1]]
+                        descartados_back.append(intento[1])
+                        print("Carta descartada: ", intento[1])
+
+                        contador_max = 0
+                        while True:
+                            contador_max += 1
+                            cambio = armas[random.randint(0,largo_armas)]
+                            intento = [intento[0], cambio, intento[2], intento[3], intento[4]]
+                            i = 0
+                            flag = True
+                            while i < len(restricciones):
+
+                                restriccion_actual = restricciones[i]
+
+                                carta_1 = restricciones[i][0]
+                                carta_2 = restricciones[i][1]
+
+                                m = 0
+
+                                while m < 4:
+
+                                    if(carta_1 == intento[m]):
+                                        
+                                        n = 0
+                                        while n < 4:
+
+                                            if(carta_2 == intento[n]):
+                                                flag = False
+                                                break
+                                            
+                                            n += 1
+                                        break
+                                        
+                                    
+                                    m += 1
+                                
+                                if(flag == False):
+                                    break
+
+                                i += 1
+
+                            if(flag == False):
+                                if(contador_max == 10000):
+                                    dado(dado = random.randint(1,5))
+                                    break
+                                continue
+                            
+                            if(flag == True):
+                                backtracking_aux(sospechosos, armas, motivos, partes_cuerpo, lugares, combinacion_ganadora, restricciones, intentos_inteligentes, descartes, cantidad, intento)
+                                x = False
+                                break
+
+                        if(x == False):
+                            break
+
                     else:
                         i += 1
                         continue
-                break
+                    
+                if(x == False):
+                     break   
+
+                continue
                 
 
-            elif(intento_armas == combinacion_ganadora[1]):
+            elif(intento[1] == combinacion_ganadora[1]):
                 dado = random.randint(1,5)
                 continue
 
         if(dado == 3):
 
-            if(intento_motivos != combinacion_ganadora[2]):
+            if(intento[2] != combinacion_ganadora[2]):
+
 
                 i = 0
                 while i <= largo_motivos:
 
-                    if(intento_motivos == motivos[i]):
+                    if(intento[2] == motivos[i]):
                         motivos = motivos[:i] + motivos[i+1:]
                         largo_motivos = len(motivos)-1
-                        descartes = descartes + [intento_motivos]
-                        descartados_back.append(intento_motivos)
-                        print("Carta descartada: ", intento_motivos)
-                        backtracking_aux(sospechosos, armas, motivos, partes_cuerpo, lugares, combinacion_ganadora, restricciones, intentos_inteligentes, descartes, cantidad)
-                        break
+                        descartes = descartes + [intento[2]]
+                        descartados_back.append(intento[2])
+                        print("Carta descartada: ", intento[2])
+
+                        contador_max = 0
+                        while True:
+                            contador_max += 1
+                            cambio = motivos[random.randint(0,largo_motivos)]
+                            intento = [intento[0], intento[1], cambio, intento[3], intento[4]]
+                            i = 0
+                            flag = True
+                            while i < len(restricciones):
+
+                                restriccion_actual = restricciones[i]
+
+                                carta_1 = restricciones[i][0]
+                                carta_2 = restricciones[i][1]
+
+                                m = 0
+
+                                while m < 4:
+
+                                    if(carta_1 == intento[m]):
+                                        
+                                        n = 0
+                                        while n < 4:
+
+                                            if(carta_2 == intento[n]):
+                                                flag = False
+                                                break
+                                            
+                                            n += 1
+                                        break
+                                        
+                                    
+                                    m += 1
+                                
+                                if(flag == False):
+                                    break
+
+                                i += 1
+
+                            if(flag == False):
+                                if(contador_max == 10000):
+                                    dado(dado = random.randint(1,5))
+                                    break
+                                continue
+                            
+                            if(flag == True):
+                                backtracking_aux(sospechosos, armas, motivos, partes_cuerpo, lugares, combinacion_ganadora, restricciones, intentos_inteligentes, descartes, cantidad, intento)
+                                x = False
+                                break
+                        if(x == False):
+                            break
+
                     else:
                         i += 1
                         continue
-                break
+                    
+                if(x == False):
+                     break   
 
-            elif(intento_motivos == combinacion_ganadora[2]):
+                continue
+                
+
+            elif(intento[2] == combinacion_ganadora[2]):
                 dado = random.randint(1,5)
                 continue
 
         if(dado == 4):
 
-            if(intento_partes_cuerpo != combinacion_ganadora[3]):
+            if(intento[3] != combinacion_ganadora[3]):
 
                 i = 0
                 while i <= largo_partes_cuerpo:
-                    
-                    if(intento_partes_cuerpo == partes_cuerpo[i]):
+
+                    if(intento[3] == partes_cuerpo[i]):
                         partes_cuerpo = partes_cuerpo[:i] + partes_cuerpo[i+1:]
                         largo_partes_cuerpo = len(partes_cuerpo)-1
-                        descartes = descartes + [intento_partes_cuerpo]
-                        descartados_back.append(intento_partes_cuerpo)
-                        print("Carta descartada: ", intento_partes_cuerpo)
-                        backtracking_aux(sospechosos, armas, motivos, partes_cuerpo, lugares, combinacion_ganadora, restricciones, intentos_inteligentes, descartes, cantidad)
-                        break
+                        descartes = descartes + [intento[3]]
+                        descartados_back.append(intento[3])
+                        print("Carta descartada: ", intento[3])
+
+                        contador_max = 0
+                        while True:
+                            contador_max += 1
+                            cambio = partes_cuerpo[random.randint(0,largo_partes_cuerpo)]
+                            intento = [intento[0], intento[1], intento[2], cambio, intento[4]]
+                            i = 0
+                            flag = True
+                            while i < len(restricciones):
+
+                                restriccion_actual = restricciones[i]
+
+                                carta_1 = restricciones[i][0]
+                                carta_2 = restricciones[i][1]
+
+                                m = 0
+
+                                while m < 4:
+
+                                    if(carta_1 == intento[m]):
+                                        
+                                        n = 0
+                                        while n < 4:
+
+                                            if(carta_2 == intento[n]):
+                                                flag = False
+                                                break
+                                            
+                                            n += 1
+                                        break
+                                        
+                                    
+                                    m += 1
+                                
+                                if(flag == False):
+                                    break
+
+                                i += 1
+
+                            if(flag == False):
+                                if(contador_max == 10000):
+                                    dado(dado = random.randint(1,5))
+                                    break
+                                continue
+                            
+                            if(flag == True):
+                                backtracking_aux(sospechosos, armas, motivos, partes_cuerpo, lugares, combinacion_ganadora, restricciones, intentos_inteligentes, descartes, cantidad, intento)
+                                x = False
+                                break
+
+                        if(x == False):
+                            break
+
                     else:
                         i += 1
                         continue
-                break
-            elif(intento_partes_cuerpo == combinacion_ganadora[3]):
+                    
+                if(x == False):
+                     break   
+
+                continue
+                
+
+            elif(intento[3] == combinacion_ganadora[3]):
                 dado = random.randint(1,5)
                 continue
 
         
         if(dado == 5):
 
-            if(intento_lugares != combinacion_ganadora[4]):
+            if(intento[4] != combinacion_ganadora[4]):
 
                 i = 0
                 while i <= largo_lugares:
 
-                    if(intento_lugares == lugares[i]):
+                    if(intento[4] == lugares[i]):
                         lugares = lugares[:i] + lugares[i+1:]
                         largo_lugares = len(lugares)-1
-                        descartes = descartes + [intento_lugares]
-                        descartados_back.append(intento_lugares)
-                        print("Carta descartada: ", intento_lugares)
-                        backtracking_aux(sospechosos, armas, motivos, partes_cuerpo, lugares, combinacion_ganadora, restricciones, intentos_inteligentes, descartes, cantidad)
-                        break
+                        descartes = descartes + [intento[4]]
+                        descartados_back.append(intento[4])
+                        print("Carta descartada: ", intento[4])
+
+                        contador_max = 0
+                        while True:
+                            contador_max += 1
+                            cambio = lugares[random.randint(0,largo_lugares)]
+                            intento = [intento[0], intento[1], intento[2], intento[3], cambio]
+                            i = 0
+                            flag = True
+                            while i < len(restricciones):
+
+                                restriccion_actual = restricciones[i]
+
+                                carta_1 = restricciones[i][0]
+                                carta_2 = restricciones[i][1]
+
+                                m = 0
+
+                                while m < 4:
+
+                                    if(carta_1 == intento[m]):
+                                        
+                                        n = 0
+                                        while n < 4:
+
+                                            if(carta_2 == intento[n]):
+                                                flag = False
+                                                break
+                                            
+                                            n += 1
+                                        break
+                                        
+                                    
+                                    m += 1
+                                
+                                if(flag == False):
+                                    break
+
+                                i += 1
+
+                            if(flag == False):
+                                if(contador_max == 10000):
+                                    dado(dado = random.randint(1,5))
+                                    break
+                                continue
+                            
+                            if(flag == True):
+                                backtracking_aux(sospechosos, armas, motivos, partes_cuerpo, lugares, combinacion_ganadora, restricciones, intentos_inteligentes, descartes, cantidad, intento)
+                                x = False
+                                break
+
+                        if(x == False):
+                            break
+
                     else:
                         i += 1
                         continue
-                break
-            elif(intento_lugares == combinacion_ganadora[4]):
+                    
+                if(x == False):
+                     break   
+
+                continue
+                
+
+            elif(intento[4] == combinacion_ganadora[4]):
                 dado = random.randint(1,5)
                 continue
 
