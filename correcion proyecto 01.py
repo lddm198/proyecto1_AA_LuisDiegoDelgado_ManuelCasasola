@@ -40,7 +40,7 @@ def clue():
 
     
     fuerza_bruta(sospechosos, armas, motivos, partes_cuerpo, lugares, combinacion_ganadora)
-    backtracking(sospechosos, armas, motivos, partes_cuerpo, lugares, combinacion_ganadora, 1000)
+    backtracking(sospechosos, armas, motivos, partes_cuerpo, lugares, combinacion_ganadora, 0)
     
 
 
@@ -443,14 +443,14 @@ def backtracking(lista_sospechosos, lista_armas, lista_motivos, lista_partes_cue
 
     while True:
 
-        intento_sospechosos = sospechosos[random.randint(0,largo_sospechosos)]
-        intento_armas = armas[random.randint(0,largo_armas)]
-        intento_motivos = motivos[random.randint(0,largo_motivos)]
-        intento_partes_cuerpo = partes_cuerpo[random.randint(0,largo_partes_cuerpo)]
-        intento_lugares = lugares[random.randint(0,largo_lugares)]
+        # intento_sospechosos = sospechosos[random.randint(0,largo_sospechosos)]
+        # intento_armas = armas[random.randint(0,largo_armas)]
+        # intento_motivos = motivos[random.randint(0,largo_motivos)]
+        # intento_partes_cuerpo = partes_cuerpo[random.randint(0,largo_partes_cuerpo)]
+        # intento_lugares = lugares[random.randint(0,largo_lugares)]
 
 
-        intento = [intento_sospechosos, intento_armas, intento_motivos, intento_partes_cuerpo, intento_lugares]
+        intento = [sospechosos[0], armas[0], motivos[0], partes_cuerpo[0], lugares[0]]
 
         i = 0
         flag = True

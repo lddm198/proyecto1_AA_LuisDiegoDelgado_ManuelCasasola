@@ -254,13 +254,19 @@ def backtracking(lista_sospechosos, lista_armas, lista_motivos, lista_partes_cue
     print("Restricciones: ", restricciones)
     print()
 
+    v = 0
+    w = 0
+    x = 0
+    y = 0
+    z = 0
+
     while True:
 
-        intento_sospechosos = sospechosos[random.randint(0,largo_sospechosos)]
-        intento_armas = armas[random.randint(0,largo_armas)]
-        intento_motivos = motivos[random.randint(0,largo_motivos)]
-        intento_partes_cuerpo = partes_cuerpo[random.randint(0,largo_partes_cuerpo)]
-        intento_lugares = lugares[random.randint(0,largo_lugares)]
+        intento_sospechosos = sospechosos[v]
+        intento_armas = armas[w]
+        intento_motivos = motivos[x]
+        intento_partes_cuerpo = partes_cuerpo[y]
+        intento_lugares = lugares[z]
 
 
         intento = [intento_sospechosos, intento_armas, intento_motivos, intento_partes_cuerpo, intento_lugares]
@@ -294,6 +300,24 @@ def backtracking(lista_sospechosos, lista_armas, lista_motivos, lista_partes_cue
                 m += 1
             
             if(flag == False):
+                v += 1
+
+                if (v == 6):
+                    w += 1
+                    v = 0
+
+                    if(w == 7):
+                        x += 1
+                        w = 0
+
+                        if(x == 5):
+                            y += 1
+                            x = 0
+
+                            if(y == 5):
+                                z += 1
+                                y = 0
+
                 break
 
             i += 1
@@ -304,7 +328,14 @@ def backtracking(lista_sospechosos, lista_armas, lista_motivos, lista_partes_cue
         if(flag == True):
             break
     
+    timestamp1 = time.time() * 1000
+
     backtracking_aux(lista_sospechosos, lista_armas, lista_motivos, lista_partes_cuerpo, lista_lugares, lista_combinacion_ganadora, restricciones, intentos_inteligentes, descartes, cantidad_intentos, intento)
+
+    timestamp2 = time.time() * 1000
+
+    print("\n\nTiempo Total: ")
+    print(timestamp2 - timestamp1)
 
 def backtracking_aux(lista_sospechosos, lista_armas, lista_motivos, lista_partes_cuerpo, lista_lugares, lista_combinacion_ganadoras, restricciones, intentos_inteligentes, lista_descartes, cantidad_intentos, intento):
 
